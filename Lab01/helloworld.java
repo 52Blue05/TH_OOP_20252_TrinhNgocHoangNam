@@ -1,8 +1,8 @@
 package Lab01;
 
-public class helloworld {
+public class HelloWorld {
     public static void main(String[] args) {
-        System.out.println("Xin chao cac ban!");
-        System.err.println("Hello world!");
+        System.out.println("Xin chao \n cac ban!");
+        System.err.println("Hello \t world!");
     }
 }

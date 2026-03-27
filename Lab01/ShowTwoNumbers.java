@@ -7,12 +7,12 @@ public class ShowTwoNumbers {
         String strNum1, strNum2;
         String strNotification = "You've just entered: ";
 
-        strNum1 = JOptionPane.showInputDialog(null, "Please enter the first number:", "Input the first number",
+        strNum1 = JOptionPane.showInputDialog(null, "Please input the first number:", "Input the first number",
                 JOptionPane.QUESTION_MESSAGE);
         strNotification += strNum1 + " and ";
-        strNum2 = JOptionPane.showInputDialog(null, "Please enter the second number:", "Input the second number",
+        strNum2 = JOptionPane.showInputDialog(null, "Please input the second number:", "Input the second number",
                 JOptionPane.QUESTION_MESSAGE);
         strNotification += strNum2;
-        JOptionPane.showMessageDialog(null, strNotification, "Show Two Numbers", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, strNotification, "Show two numbers", JOptionPane.INFORMATION_MESSAGE);
     }
 }
