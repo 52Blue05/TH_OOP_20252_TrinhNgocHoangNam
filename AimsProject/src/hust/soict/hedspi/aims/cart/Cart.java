@@ -1,198 +1,97 @@
-package hust.soict.hespi.aims.cart;
+package hust.soict.hedspi.aims.cart;
 
-import hust.soict.hespi.aims.media.Media;
-import hust.soict.hespi.aims.media.Playable;
-import hust.soict.hespi.aims.media.MediaComparatorByCostTitle;
-import hust.soict.hespi.aims.media.MediaComparatorByTitleCost;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import hust.soict.hedspi.aims.disc.DigitalVideoDisc;
 
 public class Cart {
     public static final int MAX_NUMBERS_ORDERED = 20;
-    private final ArrayList<Media> itemsOrdered = new ArrayList<Media>();
+    private DigitalVideoDisc[] itemsOrdered = new DigitalVideoDisc[MAX_NUMBERS_ORDERED];
+    private int qtyOrdered = 0;
 
-    public void addMedia(Media... mediaList) {
-        if (itemsOrdered.size() + mediaList.length > MAX_NUMBERS_ORDERED) {
-            System.out.println("Error: Cannot add " + mediaList.length + " items. Cart capacity limit ("
-                    + MAX_NUMBERS_ORDERED + ") exceeded.");
-            return;
+    public void addDigitalVideoDisc(DigitalVideoDisc disc) {
+        if (qtyOrdered < MAX_NUMBERS_ORDERED) {
+            itemsOrdered[qtyOrdered] = disc;
+            qtyOrdered++;
+            System.out.println("The DVD '" + disc.getTitle() + "' has been added.");
+        } else {
+            System.out.println("The cart is almost full!");
         }
-        for (Media mediaa : mediaList) {
-            if (mediaa != null) {
-                if (!itemsOrdered.contains(mediaa)) {
-                    itemsOrdered.add(mediaa);
-                    System.out.println("'" + mediaa.getTitle() + "' has been added to the cart.");
-                } else {
-                    System.out.println("'" + mediaa.getTitle() + "' is already in the cart.");
+    }
+
+    // Yêu cầu 2.1: Method overloading dùng mảng hoặc varargs
+    // Varargs cho phép truyền tùy ý số lượng đối số. Nó tốt hơn mảng ở chỗ không
+    // cần tạo mảng trước khi truyền.
+    public void addDigitalVideoDisc(DigitalVideoDisc... dvdList) {
+        for (DigitalVideoDisc disc : dvdList) {
+            addDigitalVideoDisc(disc);
+        }
+    }
+
+    // Yêu cầu 2.2: Method overloading với 2 tham số
+    public void addDigitalVideoDisc(DigitalVideoDisc dvd1, DigitalVideoDisc dvd2) {
+        addDigitalVideoDisc(dvd1);
+        addDigitalVideoDisc(dvd2);
+    }
+
+    public void removeDigitalVideoDisc(DigitalVideoDisc disc) {
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i] == disc) {
+                for (int j = i; j < qtyOrdered - 1; j++) {
+                    itemsOrdered[j] = itemsOrdered[j + 1];
                 }
-            } else {
-                System.out.println("Error: Cannot add a null item to the cart.");
+                itemsOrdered[qtyOrdered - 1] = null;
+                qtyOrdered--;
+                System.out.println("The DVD '" + disc.getTitle() + "' has been removed.");
+                return;
             }
         }
-    }
-
-    public void addMedia(Media media) {
-        if (media != null) {
-            if (itemsOrdered.size() < MAX_NUMBERS_ORDERED) {
-                if (!itemsOrdered.contains(media)) {
-                    itemsOrdered.add(media);
-                    System.out.println("'" + media.getTitle() + "' has been added to the cart.");
-                } else {
-                    System.out.println("'" + media.getTitle() + "' is already in the cart.");
-                }
-            } else {
-                System.out.println("Error: Cannot add '" + media.getTitle() + "'. Cart capacity limit ("
-                        + MAX_NUMBERS_ORDERED + ") reached.");
-            }
-        } else {
-            System.out.println("Error: Cannot add a null item to the cart.");
-        }
-    }
-
-    public void removeMedia(Media mediaa) {
-        if (mediaa != null) {
-            if (itemsOrdered.remove(mediaa)) {
-                System.out.println("'" + mediaa.getTitle() + "' has been removed from the cart.");
-            } else {
-                System.out.println("'" + mediaa.getTitle() + "' was not found in the cart.");
-            }
-        } else {
-            System.out.println("Error: Cannot remove a null item.");
-        }
-    }
-
-    public void removeMediaByTitle(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            System.out.println("Title cannot be empty.");
-            return;
-        }
-        Media mediaToRemove = null;
-        for (Media media : itemsOrdered) {
-            if (media.getTitle().equalsIgnoreCase(title.trim())) {
-                mediaToRemove = media;
-                break;
-            }
-        }
-
-        if (mediaToRemove != null) {
-            removeMedia(mediaToRemove);
-        } else {
-            System.out.println("Media with title '" + title + "' not found in the cart.");
-        }
+        System.out.println("The DVD is not in the cart.");
     }
 
     public float totalCost() {
         float total = 0;
-        for (Media mediaa : itemsOrdered) {
-            total += mediaa.getCost();
+        for (int i = 0; i < qtyOrdered; i++) {
+            total += itemsOrdered[i].getCost();
         }
-        System.out.println("Total cost: " + String.format("%.2f", total) + "$");
         return total;
     }
 
+    // Yêu cầu 6: Hàm in danh sách
     public void print() {
         System.out.println("***********************CART***********************");
-        if (itemsOrdered.isEmpty()) {
-            System.out.println("The cart is currently empty.");
-        } else {
-            System.out.println("Ordered Items:");
-            for (int i = 0; i < itemsOrdered.size(); i++) {
-                Media media = itemsOrdered.get(i);
-                System.out.println((i + 1) + ". " + media.toString());
-            }
+        System.out.println("Ordered Items:");
+        for (int i = 0; i < qtyOrdered; i++) {
+            System.out.println((i + 1) + ". " + itemsOrdered[i].toString());
         }
+        System.out.println("Total cost: " + totalCost() + " $");
         System.out.println("***************************************************");
     }
 
-    public void filterMediaByTitle(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            System.out.println("Title cannot be empty for filtering.");
-            return;
-        }
-        System.out.println("--- Filtering Cart by Title: '" + title + "' ---");
+    // Yêu cầu 6: Tìm kiếm theo ID
+    public void searchById(int id) {
         boolean found = false;
-        String searchTitle = title.trim().toLowerCase();
-        for (Media media : itemsOrdered) {
-            if (media.getTitle().toLowerCase().contains(searchTitle)) {
-                System.out.println(media.toString());
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i].getId() == id) {
+                System.out.println("Found match: " + itemsOrdered[i].toString());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("No match found for ID: " + id);
+        }
+    }
+
+    // Yêu cầu 6: Tìm kiếm theo Title
+    public void searchByTitle(String title) {
+        boolean found = false;
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i].isMatch(title)) {
+                System.out.println("Found match: " + itemsOrdered[i].toString());
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("No items found with title containing: '" + title + "'");
+            System.out.println("No match found for Title: " + title);
         }
-        System.out.println("-------------------------------------------");
-    }
-
-    public static final Comparator<Media> COMPARE_BY_TITLE_COST_C = new MediaComparatorByTitleCost();
-    public static final Comparator<Media> COMPARE_BY_COST_TITLE_C = new MediaComparatorByCostTitle();
-
-    public void sortByTitleCost() {
-        System.out.println("--- Sorting Cart by Title (then Cost) ---");
-        ArrayList<Media> sortedItems = new ArrayList<>(itemsOrdered);
-
-        Collections.sort(sortedItems, COMPARE_BY_TITLE_COST_C);
-
-        printSortedList(sortedItems);
-        System.out.println("-------------------------------------------");
-    }
-
-    public void sortByCostTitle() {
-        System.out.println("--- Sorting Cart by Cost (then Title) ---");
-        ArrayList<Media> sortedItems = new ArrayList<>(itemsOrdered);
-
-        Collections.sort(sortedItems, COMPARE_BY_COST_TITLE_C);
-
-        printSortedList(sortedItems);
-        System.out.println("-------------------------------------------");
-    }
-
-    private void printSortedList(ArrayList<Media> listToPrint) {
-        if (listToPrint.isEmpty()) {
-            System.out.println("The list is empty.");
-        } else {
-            for (int i = 0; i < listToPrint.size(); i++) {
-                System.out.println((i + 1) + ". " + listToPrint.get(i).toString());
-            }
-        }
-    }
-
-    public void playMedia(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            System.out.println("Title cannot be empty for playing.");
-            return;
-        }
-        Media mediaToPlay = null;
-        for (Media media : itemsOrdered) {
-            if (media.getTitle().equalsIgnoreCase(title.trim())) {
-                mediaToPlay = media;
-                break;
-            }
-        }
-
-        if (mediaToPlay != null) {
-            if (mediaToPlay instanceof Playable) {
-                try {
-                    System.out.println("Playing: '" + mediaToPlay.getTitle() + "'");
-                    ((Playable) mediaToPlay).play();
-                } catch (Exception e) {
-                    System.out.println("Error playing '" + mediaToPlay.getTitle() + "': " + e.getMessage());
-                }
-            } else {
-                System.out.println("'" + mediaToPlay.getTitle() + "' cannot be played.");
-            }
-        } else {
-            System.out.println("Media with title '" + title + "' not found in the cart or cannot be played.");
-        }
-    }
-
-    public void clear() {
-        itemsOrdered.clear();
-    }
-
-    public ArrayList<Media> getItemsOrdered() {
-        return itemsOrdered;
     }
 }
