@@ -15,14 +15,10 @@ public class TestPassingParameter {
         System.out.println("jungle dvd title: " + jungleDVD.getTitle());
     }
 
-    // Viết lại hàm swap đúng bản chất: Hoán đổi nội dung (các thuộc tính)
     public static void swap(DigitalVideoDisc d1, DigitalVideoDisc d2) {
         String tmpTitle = d1.getTitle();
         d1.setTitle(d2.getTitle());
         d2.setTitle(tmpTitle);
-
-        // (Trong ứng dụng thật, bạn sẽ phải swap thêm cost, category, director,
-        // length...)
     }
 
     public static void changeTitle(DigitalVideoDisc dvd, String title) {

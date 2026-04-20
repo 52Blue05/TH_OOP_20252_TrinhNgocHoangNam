@@ -22,10 +22,10 @@ public class CartTest {
 
         // Test tìm kiếm
         System.out.println("\n--- Testing Search ---");
-        cart.searchById(1); // Sẽ tìm thấy The Lion King vì nó tạo đầu tiên (ID=1)
-        cart.searchById(99); // Không thấy
+        cart.searchById(1);
+        cart.searchById(99);
 
-        cart.searchByTitle("Star Wars"); // Sẽ tìm thấy
-        cart.searchByTitle("Avatar"); // Không thấy
+        cart.searchByTitle("Star Wars");
+        cart.searchByTitle("Avatar");
     }
 }
