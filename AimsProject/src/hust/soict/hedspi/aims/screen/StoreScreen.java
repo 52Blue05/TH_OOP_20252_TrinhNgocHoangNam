@@ -3,14 +3,14 @@ package hust.soict.hedspi.aims.screen;
 import hust.soict.hedspi.aims.cart.Cart;
 import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.store.Store;
-
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class StoreScreen extends JFrame {
     private Store store;
     private Cart cart;
+    private JPanel centerPanel;
 
     public StoreScreen(Store store, Cart cart) {
         this.store = store;
@@ -20,7 +20,8 @@ public class StoreScreen extends JFrame {
         cp.setLayout(new BorderLayout());
 
         cp.add(createNorth(), BorderLayout.NORTH);
-        cp.add(createCenter(), BorderLayout.CENTER);
+        centerPanel = createCenter();
+        cp.add(centerPanel, BorderLayout.CENTER);
 
         setVisible(true);
         setTitle("Store");
@@ -42,12 +43,22 @@ public class StoreScreen extends JFrame {
         JMenu menu = new JMenu("Options");
 
         JMenu smUpdateStore = new JMenu("Update Store");
-        smUpdateStore.add(new JMenuItem("Add Book"));
-        smUpdateStore.add(new JMenuItem("Add CD"));
-        smUpdateStore.add(new JMenuItem("Add DVD"));
+        JMenuItem addBook = new JMenuItem("Add Book");
+        JMenuItem addCD = new JMenuItem("Add CD");
+        JMenuItem addDVD = new JMenuItem("Add DVD");
+
+        addBook.addActionListener(e -> new AddBookToStoreScreen(store, this::refreshStoreView));
+        addCD.addActionListener(e -> new AddCompactDiscToStoreScreen(store, this::refreshStoreView));
+        addDVD.addActionListener(e -> new AddDigitalVideoDiscToStoreScreen(store, this::refreshStoreView));
+
+        smUpdateStore.add(addBook);
+        smUpdateStore.add(addCD);
+        smUpdateStore.add(addDVD);
 
         menu.add(smUpdateStore);
-        menu.add(new JMenuItem("View store"));
+
+        JMenuItem viewStore = new JMenuItem("View store");
+        menu.add(viewStore);
 
         JMenuItem viewCart = new JMenuItem("View cart");
         menu.add(viewCart);
@@ -56,9 +67,8 @@ public class StoreScreen extends JFrame {
         menuBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         menuBar.add(menu);
 
-        viewCart.addActionListener(e -> {
-            new CartScreen(cart);
-        });
+        viewStore.addActionListener(e -> showStoreView());
+        viewCart.addActionListener(e -> new CartScreen(cart, this::showStoreView));
 
         return menuBar;
     }
@@ -75,9 +85,7 @@ public class StoreScreen extends JFrame {
         cartButton.setPreferredSize(new Dimension(100, 50));
         cartButton.setMaximumSize(new Dimension(100, 50));
 
-        cartButton.addActionListener(e -> {
-            new CartScreen(cart);
-        });
+        cartButton.addActionListener(e -> new CartScreen(cart, this::showStoreView));
 
         header.add(Box.createRigidArea(new Dimension(10, 10)));
         header.add(title);
@@ -100,5 +108,26 @@ public class StoreScreen extends JFrame {
         }
 
         return center;
+    }
+
+    private void refreshStoreView() {
+        Container cp = getContentPane();
+
+        if (centerPanel != null) {
+            cp.remove(centerPanel);
+        }
+
+        centerPanel = createCenter();
+        cp.add(centerPanel, BorderLayout.CENTER);
+        cp.revalidate();
+        cp.repaint();
+    }
+
+    private void showStoreView() {
+        refreshStoreView();
+        setExtendedState(getExtendedState() & ~Frame.ICONIFIED);
+        setVisible(true);
+        toFront();
+        requestFocus();
     }
 }

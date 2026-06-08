@@ -2,6 +2,8 @@ package hust.soict.hedspi.aims.media;
 
 import java.util.ArrayList;
 
+import hust.soict.hedspi.aims.exception.PlayerException;
+
 public class CompactDisc extends Disc implements Playable {
     private final String artist;
     private final ArrayList<Track> tracks = new ArrayList<Track>();
@@ -43,20 +45,27 @@ public class CompactDisc extends Disc implements Playable {
         }
         return sumLength;
     }
-    public String toString() {
-        return "CompactDisc - " + getTitle() + " - " + getCategory() + " - " + getArtist() + " - " + getDirector() + " - " + getLength() + " - " + getCost();
-    }
-    public void play() {
-        System.out.println("Playing CD: " + this.getTitle());
-        System.out.println("Artist: " + this.getArtist());
-        System.out.println("Tracks:");
 
-        if (tracks != null) {
-            for (Track track : tracks) {
+    public String toString() {
+        return "CompactDisc - " + getTitle() + " - " + getCategory() + " - " + getArtist() + " - " + getDirector()
+                + " - " + getLength() + " - " + getCost();
+    }
+
+    @Override
+    public void play() throws PlayerException {
+        if (this.getLength() <= 0) {
+            throw new PlayerException("ERROR: CD length is non-positive!");
+        }
+
+        System.out.println("Playing CD: " + this.getTitle());
+        System.out.println("CD length: " + this.getLength());
+
+        for (Track track : tracks) {
+            try {
                 track.play();
+            } catch (PlayerException e) {
+                throw new PlayerException("ERROR: Cannot play track " + track.getTitle() + ". " + e.getMessage());
             }
-        } else {
-            System.out.println("No tracks on this CD.");
         }
     }
 

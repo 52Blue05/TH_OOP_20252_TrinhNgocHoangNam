@@ -2,6 +2,8 @@ package hust.soict.hedspi.aims.cart;
 
 import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.media.Playable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import hust.soict.hedspi.aims.media.MediaComparatorByCostTitle;
 import hust.soict.hedspi.aims.media.MediaComparatorByTitleCost;
 
@@ -11,7 +13,7 @@ import java.util.Comparator;
 
 public class Cart {
     public static final int MAX_NUMBERS_ORDERED = 20;
-    private final ArrayList<Media> itemsOrdered = new ArrayList<Media>();
+    private final ObservableList<Media> itemsOrdered = FXCollections.observableArrayList();
 
     public void addMedia(Media... mediaList) {
         if (itemsOrdered.size() + mediaList.length > MAX_NUMBERS_ORDERED) {
@@ -208,7 +210,7 @@ public class Cart {
         itemsOrdered.clear();
     }
 
-    public ArrayList<Media> getItemsOrdered() {
+    public ObservableList<Media> getItemsOrdered() {
         return itemsOrdered;
     }
 }

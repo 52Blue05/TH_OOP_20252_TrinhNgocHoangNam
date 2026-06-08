@@ -1,9 +1,11 @@
 package hust.soict.hedspi.aims;
 
 import hust.soict.hedspi.aims.cart.Cart;
+import hust.soict.hedspi.aims.exception.PlayerException;
 import hust.soict.hedspi.aims.media.*;
 import hust.soict.hedspi.aims.store.Store;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class Aims {
     private static Store store = new Store();
@@ -132,8 +134,12 @@ public class Aims {
                             if (media instanceof Playable) {
                                 try {
                                     ((Playable) media).play();
-                                } catch (Exception e) {
-                                    System.out.println("Error playing media: " + e.getMessage());
+                                } catch (PlayerException e) {
+                                    JOptionPane.showMessageDialog(
+                                            null,
+                                            e.getMessage(),
+                                            "Illegal Media Length",
+                                            JOptionPane.ERROR_MESSAGE);
                                 }
                             } else {
                                 System.out.println("'" + media.getTitle() + "' cannot be played.");
@@ -171,8 +177,12 @@ public class Aims {
             if (media instanceof Playable) {
                 try {
                     ((Playable) media).play();
-                } catch (Exception e) {
-                    System.out.println("Error playing media: " + e.getMessage());
+                } catch (PlayerException e) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            e.getMessage(),
+                            "Illegal Media Length",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 System.out.println("'" + media.getTitle() + "' cannot be played.");
