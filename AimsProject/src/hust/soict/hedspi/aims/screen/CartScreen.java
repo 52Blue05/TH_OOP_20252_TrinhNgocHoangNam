@@ -28,6 +28,7 @@ public class CartScreen extends JFrame {
         this.cart = cart;
         this.viewStoreAction = viewStoreAction;
 
+        Platform.setImplicitExit(false);
         JFXPanel fxPanel = new JFXPanel();
         this.add(fxPanel);
 
@@ -46,7 +47,7 @@ public class CartScreen extends JFrame {
 
                 Parent root = loader.getRoot();
                 fxPanel.setScene(new Scene(root));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
                         this,
@@ -58,11 +59,6 @@ public class CartScreen extends JFrame {
     }
 
     private URL findCartFxml() throws IOException {
-        URL resource = getClass().getResource("cart.fxml");
-        if (resource != null) {
-            return resource;
-        }
-
         Path[] candidates = {
                 Paths.get("AimsProject", "src", "hust", "soict", "hedspi", "aims", "screen", "cart.fxml"),
                 Paths.get("src", "hust", "soict", "hedspi", "aims", "screen", "cart.fxml")
@@ -72,6 +68,11 @@ public class CartScreen extends JFrame {
             if (Files.exists(candidate)) {
                 return candidate.toAbsolutePath().toUri().toURL();
             }
+        }
+
+        URL resource = getClass().getResource("cart.fxml");
+        if (resource != null) {
+            return resource;
         }
 
         throw new IOException("cart.fxml was not found on the classpath or in the source folder.");

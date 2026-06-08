@@ -3,13 +3,14 @@ package hust.soict.hedspi.aims.screen;
 import hust.soict.hedspi.aims.cart.Cart;
 import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.media.Playable;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CartScreenController {
     private Cart cart;
@@ -61,9 +62,9 @@ public class CartScreenController {
     private void initialize() {
         tblMedia.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        colMediaTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        colMediaCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colMediaCost.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        colMediaTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        colMediaCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory()));
+        colMediaCost.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getCost()).asObject());
 
         cartItems = FXCollections.observableArrayList(cart.getItemsOrdered());
         filteredList = new FilteredList<>(cartItems, p -> true);
